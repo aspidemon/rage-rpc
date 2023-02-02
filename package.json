@@ -1,6 +1,6 @@
 {
   "name": "@aspidemon/rage-rpc",
-  "version": "0.0.19",
+  "version": "0.0.20",
   "main": "src/index.ts",
   "scripts": {
     "build": "tsc"
@@ -8,10 +8,7 @@
   "keywords": [],
   "author": "ASPI",
   "license": "ASPI",
-  "description": "",
-  "dependencies": {
-
-  },
+  "description": "MIT License",
   "devDependencies": {
     "@ragempcommunity/types-cef": "^2.1.1",
     "@ragempcommunity/types-client": "^2.1.3",
@@ -20,5 +17,13 @@
     "esbuild-plugin-inline-import": "^1.0.1",
     "esbuild-ts-paths": "^1.1.3",
     "typescript": "^4.9.4"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aspidemon/rage-rpc.git"
+  },
+  "bugs": {
+    "url": "https://github.com/aspidemon/rage-rpc/issues"
+  },
+  "homepage": "https://github.com/aspidemon/rage-rpc#readme"
 }
