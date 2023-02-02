@@ -97,9 +97,13 @@ class RPC {
     //     });
     // }
 
-    //? SERVER
-    public emitClient(player:PlayerMp, eventName:string, ...args:any[]) {
+    //? CEF
+    public emitClient(eventName:string, ...args:any[]) {
         window.mp.trigger(getHash('rpc.client:events:emit'), eventName, ...args);
+    }
+
+    public emitServer(eventName:string, ...args:any[]) {
+        window.mp.trigger(getHash('rpc.cef:to:server:events:emit'), eventName, ...args);
     }
 
     // public emitAllClients(eventName:string, ...args:any[]) {

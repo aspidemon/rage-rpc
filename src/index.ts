@@ -24,6 +24,14 @@ class RPC {
                     this._listeners.get(eventName)(...args);
                 });
 
+                mp.events.add(util.getHash('rpc.cef:to:server:events:emit'), (eventName:string, ...args:any[]) => {
+                    this._callServer(util.getHash('rpc.server:events:emit'), eventName, ...args);
+                });
+
+                mp.events.add(util.getHash('rpc.client:to:cef:events:emit'), (browser:BrowserMp, eventName:string, ...args:any[]) => {
+                    browser.execute(`rpc.emit('${eventName}', ${JSON.stringify(args)})`);
+                });
+
                 //? Ивент вызывающий события которые существуют локально на клиенте
                 mp.events.add(util.getHash(`rpc.client:events:emitProc`), (eventName:string, ...args:any[]) => {
                     let _result = this._listeners.get(eventName)(...args);
@@ -49,24 +57,6 @@ class RPC {
 
                 //? Ивент выполняющий реализацию моста для получения данных между одной частью и сервером
                 mp.events.add(util.getHash('rpc.server:pendings:emit'), (player:PlayerMp, eventName:string, result:any) => {
-                    this._pendings.get(eventName).resolve(result);
-                });
-            }
-
-            case 'cef': {
-                const mp = window.mp;
-                mp.events.add(util.getHash('rpc.cef:events:emit'), (eventName:string, ...args:any[]) => {
-                    this._listeners.get(eventName)(...args);
-                });
-
-                //? Ивент вызывающий события которые существуют локально на веб-части
-                mp.events.add(util.getHash('rpc.cef:events:emitProc'), (eventName:string, ...args:any[]) => {
-                    let _result = this._listeners.get(eventName)(...args);
-                    mp.trigger(util.getHash('rpc.client:pendings:emit'), eventName, _result);
-                });
-
-                //? Ивент выполняющий реализацию моста для получения данных между одной частью и вебом
-                mp.events.add(util.getHash('rpc.cef:pendings:emit'), (eventName:string, result:any) => {
                     this._pendings.get(eventName).resolve(result);
                 });
             }
@@ -136,8 +126,7 @@ class RPC {
 
     //? SERVER
     public emitClient(player:PlayerMp, eventName:string, ...args:any[]) {
-        if(util.getEnvriroment() == 'server') player.call(util.getHash('rpc.client:events:emit'), [eventName, ...args]);
-        else window.mp.trigger(util.getHash('rpc.client:events:emit'), eventName, ...args);
+        player.call(util.getHash('rpc.client:events:emit'), [eventName, ...args]);
     }
 
     public emitAllClients(eventName:string, ...args:any[]) {

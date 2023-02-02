@@ -58,8 +58,11 @@ class RPC {
     onServerProc(eventName, handler) {
         this._on(eventName, handler);
     }
-    emitClient(player, eventName, ...args) {
+    emitClient(eventName, ...args) {
         window.mp.trigger(getHash('rpc.client:events:emit'), eventName, ...args);
+    }
+    emitServer(eventName, ...args) {
+        window.mp.trigger(getHash('rpc.cef:to:server:events:emit'), eventName, ...args);
     }
     onClientProc(eventName, handler) {
         this._on(eventName, handler);
