@@ -7,9 +7,9 @@ declare namespace TAspid {
 
         //? SHARED
         /** Метод создающий локальное прослушивание событий */
-        public on(eventName:string, handler:(...args:any[]) => void):void;
+        public on(eventName:string, handler:(player:PlayerMp, ...args:any[]) => void):void;
         /** Метод создающий локальное прослушивание процедурных событий */
-        public onProc(eventName:string, handler:(...args:any[]) => void):void;
+        public onProc(eventName:string, handler:(player:PlayerMp, ...args:any[]) => void):void;
 
         /** Метод удаляющий существующее локальное прослушивание */
         public off(eventName:string):void;

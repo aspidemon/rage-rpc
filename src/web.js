@@ -11,15 +11,27 @@ class RPC {
     _pendings = new Map();
     constructor() {
         const mp = window.mp;
-        mp.events.add(getHash('rpc.cef:events:emit'), (eventName, ...args) => {
-            this._listeners.get(eventName)(...args);
+        window.on(getHash('rpc.cef:events:emit'), (eventName, ...args) => {
+            let _event = this._listeners.get(eventName);
+            if (_event !== undefined)
+                _event(...args);
+            else
+                console.log(`[RPC] Название ивента не было найдено (EventName: ${eventName})`);
         });
-        mp.events.add(getHash('rpc.cef:events:emitProc'), (eventName, ...args) => {
-            let _result = this._listeners.get(eventName)(...args);
+        window.on(getHash('rpc.cef:events:emitProc'), (eventName, ...args) => {
+            let _event = this._listeners.get(eventName);
+            if (_event === undefined)
+                return console.log(`[RPC] Название ивента не было найдено (EventName: ${eventName})`);
+            let _result = _event(...args);
             mp.trigger(getHash('rpc.client:pendings:emit'), eventName, _result);
         });
-        mp.events.add(getHash('rpc.cef:pendings:emit'), (eventName, result) => {
-            this._pendings.get(eventName).resolve(result);
+        window.on(getHash('rpc.cef:pendings:emit'), (eventName, result) => {
+            let _event = this._pendings.get(eventName);
+            if (_event !== undefined) {
+                _event.resolve(result);
+            }
+            else
+                console.log(`[RPC] Название ивента не было найдено (EventName: ${eventName})`);
         });
     }
     _has(eventName) {

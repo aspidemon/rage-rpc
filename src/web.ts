@@ -14,25 +14,41 @@ function getHash(str:string) {
     return String(`0x${hash & 0x7fffffff}`);
 }
 
+declare global {
+    interface Window {
+        emit:(eventName:string, ...args:any[]) => void;
+        on:(eventName:string, handler:Function) => void;
+        off:(eventName:string) => void;
+    }
+}
+
 class RPC {
     private _listeners = new Map();
     private _pendings = new Map();
 
     constructor() {
         const mp = window.mp;
-        mp.events.add(getHash('rpc.cef:events:emit'), (eventName:string, ...args:any[]) => {
-            this._listeners.get(eventName)(...args);
+        window.on(getHash('rpc.cef:events:emit'), (eventName:string, ...args:any[]) => {
+            let _event = this._listeners.get(eventName);
+            if(_event !== undefined) _event(...args);
+            else console.log(`[RPC] Название ивента не было найдено (EventName: ${eventName})`);
         });
 
         //? Ивент вызывающий события которые существуют локально на веб-части
-        mp.events.add(getHash('rpc.cef:events:emitProc'), (eventName:string, ...args:any[]) => {
-            let _result = this._listeners.get(eventName)(...args);
+        window.on(getHash('rpc.cef:events:emitProc'), (eventName:string, ...args:any[]) => {
+            let _event = this._listeners.get(eventName)
+            if(_event === undefined) return console.log(`[RPC] Название ивента не было найдено (EventName: ${eventName})`);
+
+            let _result = _event(...args);
             mp.trigger(getHash('rpc.client:pendings:emit'), eventName, _result);
         });
 
         //? Ивент выполняющий реализацию моста для получения данных между одной частью и вебом
-        mp.events.add(getHash('rpc.cef:pendings:emit'), (eventName:string, result:any) => {
-            this._pendings.get(eventName).resolve(result);
+        window.on(getHash('rpc.cef:pendings:emit'), (eventName:string, result:any) => {
+            let _event = this._pendings.get(eventName);
+            if(_event !== undefined) {
+                _event.resolve(result);
+            } else console.log(`[RPC] Название ивента не было найдено (EventName: ${eventName})`);
         });
     }
 
