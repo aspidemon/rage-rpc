@@ -10,6 +10,15 @@ class RPC {
     _listeners = new Map();
     _pendings = new Map();
     constructor() {
+        window.on = (eventName, handler) => {
+            this._on(eventName, handler);
+        };
+        window.emit = (eventName, ...args) => {
+            this._emit(eventName, ...args);
+        };
+        window.off = (eventName) => {
+            this._off(eventName);
+        };
         const mp = window.mp;
         window.on(getHash('rpc.cef:events:emit'), (eventName, ...args) => {
             let _event = this._listeners.get(eventName);

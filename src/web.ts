@@ -17,7 +17,7 @@ function getHash(str:string) {
 declare global {
     interface Window {
         emit:(eventName:string, ...args:any[]) => void;
-        on:(eventName:string, handler:Function) => void;
+        on:(eventName:string, handler:(...args:any[]) => void) => void;
         off:(eventName:string) => void;
     }
 }
@@ -27,6 +27,18 @@ class RPC {
     private _pendings = new Map();
 
     constructor() {
+        window.on = (eventName:string, handler:(...args:any[]) => void) => {
+            this._on(eventName, handler);
+        };
+
+        window.emit = (eventName:string, ...args:any[]) => {
+            this._emit(eventName, ...args);
+        };
+
+        window.off = (eventName:string) => {
+            this._off(eventName);
+        };
+
         const mp = window.mp;
         window.on(getHash('rpc.cef:events:emit'), (eventName:string, ...args:any[]) => {
             let _event = this._listeners.get(eventName);
