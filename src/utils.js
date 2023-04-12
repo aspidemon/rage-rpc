@@ -1,4 +1,4 @@
-export function getHash(str) {
+function getHash(str) {
     let hash = 0;
     for (let i = 0; i < str.length; i++) {
         const char = str.charCodeAt(i);
@@ -6,7 +6,7 @@ export function getHash(str) {
     }
     return String(`0x${hash & 0x7fffffff}`);
 }
-export function getEnvriroment() {
+function getEnvriroment() {
     if (mp && typeof mp.joaat == 'function')
         return 'server';
     if (mp && typeof mp.game.joaat == 'function')
@@ -14,3 +14,5 @@ export function getEnvriroment() {
     if (typeof window.mp.trigger == 'function')
         return 'cef';
 }
+
+module.exports = { getHash, getEnvriroment };

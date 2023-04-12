@@ -1,4 +1,4 @@
-import * as util from './utils';
+const utils = require('./utils');
 class RPC {
     _listeners = new Map();
     _pendings = new Map();
@@ -134,4 +134,4 @@ class RPC {
     }
 }
 const rpc = new RPC();
-export default rpc;
+module.exports = rpc;
