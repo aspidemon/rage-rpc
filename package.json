@@ -1,9 +1,9 @@
 {
   "name": "@aspidemon/rage-rpc",
   "version": "0.2.2",
-  "main": "src/index.ts",
+  "main": "src/index.js",
   "scripts": {
-    "build": "tsc"
+    
   },
   "keywords": [],
   "author": "ASPI",
